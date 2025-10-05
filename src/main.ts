@@ -3,6 +3,10 @@ import "./style.css";
 let counter: number = 0;
 let counterGrowSpeed: number = 0;
 
+let upgradeOneCost: number = 10;
+let upgradeTwoCost: number = 100;
+let upgradeThreeCost: number = 1000;
+
 const boxSize = 50;
 
 //<p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
@@ -12,9 +16,9 @@ document.body.innerHTML = `
   <p>Progress... <span id="counter">0</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Growth Rate: <span id="growRate">0</span></p>
   <button id="increment">&#128230;</button>
   <p>\n\n</p>
-  <p><button id="upgradeOne">A</button> &nbsp;&nbsp;&nbsp; Cost: 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 0.1/sec</p>
-  <p><button id="upgradeTwo">B</button> &nbsp;&nbsp;&nbsp; Cost: 100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 2/sec</p>
-  <p><button id="upgradeThree">C</button> &nbsp;&nbsp;&nbsp; Cost: 1000 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 50/sec</p>
+  <p><button id="upgradeOne">A</button> &nbsp;&nbsp;&nbsp; Cost: <span id="upgradeOneCost">10</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 0.1/sec</p>
+  <p><button id="upgradeTwo">B</button> &nbsp;&nbsp;&nbsp; Cost: <span id="upgradeTwoCost">100</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 2/sec</p>
+  <p><button id="upgradeThree">C</button> &nbsp;&nbsp;&nbsp; Cost: <span id="upgradeThreeCost">1000</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 50/sec</p>
 `;
 
 const counterElement = document.getElementById("counter")!;
@@ -31,6 +35,10 @@ const upgradeThree: HTMLButtonElement = document.getElementById(
   "upgradeThree",
 ) as HTMLButtonElement;
 
+const upgradeOneCostElement = document.getElementById("upgradeOneCost")!;
+const upgradeTwoCostElement = document.getElementById("upgradeTwoCost")!;
+const upgradeThreeCostElement = document.getElementById("upgradeThreeCost")!;
+
 setBoxSize(boxSize);
 
 increment.addEventListener("click", () => {
@@ -38,15 +46,21 @@ increment.addEventListener("click", () => {
 });
 
 upgradeOne.addEventListener("click", () => {
-  purchaseUpgrade(10, 0.1);
+  purchaseUpgrade(upgradeOneCost, 0.1);
+  upgradeOneCost *= 1.15;
+  upgradeOneCostElement.innerHTML = upgradeOneCost.toFixed(1);
 });
 
 upgradeTwo.addEventListener("click", () => {
-  purchaseUpgrade(100, 2);
+  purchaseUpgrade(upgradeTwoCost, 2);
+  upgradeTwoCost *= 1.15;
+  upgradeTwoCostElement.innerHTML = upgradeTwoCost.toFixed(1);
 });
 
 upgradeThree.addEventListener("click", () => {
-  purchaseUpgrade(1000, 50);
+  purchaseUpgrade(upgradeThreeCost, 50);
+  upgradeThreeCost *= 1.15;
+  upgradeThreeCostElement.innerHTML = upgradeThreeCost.toFixed(1);
 });
 
 function purchaseUpgrade(cost: number, rate: number) {
@@ -58,9 +72,9 @@ function purchaseUpgrade(cost: number, rate: number) {
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
 
-  upgradeOne.disabled = counter < 10;
-  upgradeTwo.disabled = counter < 100;
-  upgradeThree.disabled = counter < 1000;
+  upgradeOne.disabled = counter < upgradeOneCost;
+  upgradeTwo.disabled = counter < upgradeTwoCost;
+  upgradeThree.disabled = counter < upgradeThreeCost;
 
   counterElement.innerHTML = counter.toFixed(1);
 }
