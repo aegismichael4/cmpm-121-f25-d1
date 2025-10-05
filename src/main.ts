@@ -1,6 +1,8 @@
 import "./style.css";
 
 let counter: number = 0;
+let counterGrowSpeed: number = 0;
+
 const boxSize = 50;
 
 //<p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
@@ -10,16 +12,19 @@ document.body.innerHTML = `
   <p>Progress... <span id="counter">0</span></p>
   <button id="increment">&#128230;</button>
   <p>\n\n</p>
-  <button id="enableAutoClick">Enable Auto Click</button>
+  <button id="autoClick">Auto Click Upgrade</button>
   <p><span id="test">0</span></p>
 `;
 
 const counterElement = document.getElementById("counter")!;
 const increment = document.getElementById("increment")!;
-const autoClick = document.getElementById("enableAutoClick")!;
+const autoClick: HTMLButtonElement = document.getElementById(
+  "autoClick",
+) as HTMLButtonElement;
 
 // const testElement = document.getElementById("test")!;
 
+autoClick.disabled = true;
 setBoxSize(boxSize);
 
 increment.addEventListener("click", () => {
@@ -27,12 +32,18 @@ increment.addEventListener("click", () => {
 });
 
 autoClick.addEventListener("click", () => {
-  requestAnimationFrame(autoIncrement);
+  counterGrowSpeed++;
+  counter -= 10;
+  if (counter < 10) autoClick.disabled = true;
 });
 
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
-  counterElement.innerHTML = counter.toString();
+
+  if (counter >= 10 && autoClick.disabled == true) {
+    autoClick.disabled = false;
+  }
+  counterElement.innerHTML = counter.toFixed(1);
 }
 
 function setBoxSize(size: number) {
@@ -47,10 +58,9 @@ function autoIncrement(timestamp: number) {
 
   const deltaTime = (timestamp - lastTime) / 1000;
 
-  counter += deltaTime;
-
-  counterElement.innerHTML = counter.toFixed(2);
+  incrementTotal(deltaTime * counterGrowSpeed);
 
   lastTime = timestamp;
   requestAnimationFrame(autoIncrement);
 }
+requestAnimationFrame(autoIncrement);
