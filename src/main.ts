@@ -9,40 +9,59 @@ const boxSize = 50;
 
 document.body.innerHTML = `
   <h1>Game Title</h1>
-  <p>Progress... <span id="counter">0</span></p>
+  <p>Progress... <span id="counter">0</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Growth Rate: <span id="growRate">0</span></p>
   <button id="increment">&#128230;</button>
   <p>\n\n</p>
-  <button id="autoClick">Auto Click Upgrade</button>
-  <p><span id="test">0</span></p>
+  <p><button id="upgradeOne">A</button> &nbsp;&nbsp;&nbsp; Cost: 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 0.1/sec</p>
+  <p><button id="upgradeTwo">B</button> &nbsp;&nbsp;&nbsp; Cost: 100 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 2/sec</p>
+  <p><button id="upgradeThree">C</button> &nbsp;&nbsp;&nbsp; Cost: 1000 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 50/sec</p>
 `;
 
 const counterElement = document.getElementById("counter")!;
+const growthRateElement = document.getElementById("growRate")!;
 const increment = document.getElementById("increment")!;
-const autoClick: HTMLButtonElement = document.getElementById(
-  "autoClick",
+
+const upgradeOne: HTMLButtonElement = document.getElementById(
+  "upgradeOne",
+) as HTMLButtonElement;
+const upgradeTwo: HTMLButtonElement = document.getElementById(
+  "upgradeTwo",
+) as HTMLButtonElement;
+const upgradeThree: HTMLButtonElement = document.getElementById(
+  "upgradeThree",
 ) as HTMLButtonElement;
 
-// const testElement = document.getElementById("test")!;
-
-autoClick.disabled = true;
 setBoxSize(boxSize);
 
 increment.addEventListener("click", () => {
   incrementTotal(1);
 });
 
-autoClick.addEventListener("click", () => {
-  counterGrowSpeed++;
-  counter -= 10;
-  if (counter < 10) autoClick.disabled = true;
+upgradeOne.addEventListener("click", () => {
+  purchaseUpgrade(10, 0.1);
 });
+
+upgradeTwo.addEventListener("click", () => {
+  purchaseUpgrade(100, 2);
+});
+
+upgradeThree.addEventListener("click", () => {
+  purchaseUpgrade(1000, 50);
+});
+
+function purchaseUpgrade(cost: number, rate: number) {
+  counterGrowSpeed += rate;
+  counter -= cost;
+  growthRateElement.innerHTML = counterGrowSpeed.toFixed(1);
+}
 
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
 
-  if (counter >= 10 && autoClick.disabled == true) {
-    autoClick.disabled = false;
-  }
+  upgradeOne.disabled = counter < 10;
+  upgradeTwo.disabled = counter < 100;
+  upgradeThree.disabled = counter < 1000;
+
   counterElement.innerHTML = counter.toFixed(1);
 }
 
