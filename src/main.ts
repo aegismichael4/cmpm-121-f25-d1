@@ -1,9 +1,9 @@
 import "./style.css";
 
 let counter: number = 0;
-let autoClickSpeed: number = 1000;
+let autoClickSpeed: number = 2000;
 
-let autoClickInterval: any;
+let autoClickInterval = setInterval(incrementTotal, autoClickSpeed, 1);
 
 //<p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
 
@@ -13,6 +13,8 @@ document.body.innerHTML = `
   <button id="increment">Button</button>
   <button id="enableAutoClick">Enable Auto Click</button>
 `;
+
+clearInterval(autoClickInterval);
 
 const counterElement = document.getElementById("counter")!;
 const increment = document.getElementById("increment")!;
