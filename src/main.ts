@@ -1,5 +1,21 @@
 import "./style.css";
 
+import boxImg from "./assets/box.png";
+import titleImg from "./assets/ms-paint-clicker.png";
+import progressImg from "./assets/progress.png";
+
+import zeroImg from "./assets/numbers/0.png";
+import oneImg from "./assets/numbers/1.png";
+import twoImg from "./assets/numbers/2.png";
+import threeImg from "./assets/numbers/3.png";
+import fourImg from "./assets/numbers/4.png";
+import fiveImg from "./assets/numbers/5.png";
+import sixImg from "./assets/numbers/6.png";
+import sevenImg from "./assets/numbers/7.png";
+import eightImg from "./assets/numbers/8.png";
+import nineImg from "./assets/numbers/9.png";
+
+
 let counter: number = 0;
 let counterGrowSpeed: number = 0;
 
@@ -7,14 +23,13 @@ let upgradeOneCost: number = 10;
 let upgradeTwoCost: number = 100;
 let upgradeThreeCost: number = 1000;
 
-const boxSize = 50;
-
 //<p>Example image asset: <img src="${exampleIconUrl}" class="icon" /></p>
+//  <a (click)="clickBox()"><img = src="${boxImg})
 
 document.body.innerHTML = `
-  <h1>Game Title</h1>
-  <p>Progress... <span id="counter">0</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Growth Rate: <span id="growRate">0</span></p>
-  <button id="increment">&#128230;</button>
+  <center><img src = ${titleImg}></center>
+  <center><p><img src="${progressImg}"><span id="counter">0</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Growth Rate: <span id="growRate">0</span></p></center>
+  <center><button id="box"><img id="boxImage" src="${boxImg}"></button></center>
   <p>\n\n</p>
   <p><button id="upgradeOne">A</button> &nbsp;&nbsp;&nbsp; Cost: <span id="upgradeOneCost">10</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 0.1/sec</p>
   <p><button id="upgradeTwo">B</button> &nbsp;&nbsp;&nbsp; Cost: <span id="upgradeTwoCost">100</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Rate: 2/sec</p>
@@ -23,7 +38,9 @@ document.body.innerHTML = `
 
 const counterElement = document.getElementById("counter")!;
 const growthRateElement = document.getElementById("growRate")!;
-const increment = document.getElementById("increment")!;
+
+const box = document.getElementById("box")!;
+box.setAttribute("style", "border: none; background: none;");
 
 const upgradeOne: HTMLButtonElement = document.getElementById(
   "upgradeOne",
@@ -39,9 +56,7 @@ const upgradeOneCostElement = document.getElementById("upgradeOneCost")!;
 const upgradeTwoCostElement = document.getElementById("upgradeTwoCost")!;
 const upgradeThreeCostElement = document.getElementById("upgradeThreeCost")!;
 
-setBoxSize(boxSize);
-
-increment.addEventListener("click", () => {
+box.addEventListener("click", () => {
   incrementTotal(1);
 });
 
@@ -77,12 +92,6 @@ function incrementTotal(amountToAdd: number) {
   upgradeThree.disabled = counter < upgradeThreeCost;
 
   counterElement.innerHTML = counter.toFixed(1);
-}
-
-function setBoxSize(size: number) {
-  const newSizeString: string = "border: none; background: none; font-size: " +
-    size.toString() + "px";
-  increment.setAttribute("style", newSizeString);
 }
 
 let lastTime: number = -1;
