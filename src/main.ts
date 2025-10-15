@@ -68,18 +68,18 @@ document.body.innerHTML = `
   <center><button id="box"><img id="boxImage" src="${boxUndamaged}" draggable="false" style="margin-bottom: 20px; margin-top: 20px; margin-left: 20px; margin-right: 20px;"></button></center>
 
   <center> <button id="upgradeOne" style="border: none; background: none; margin-bottom: 8px"><img id="lineWeightImage" src="${lineWeight}" draggable="false"></button>
-    <button id="upgradeTwo" style="border: none; background: none; margin-left: 300px"><img id="zoomAmountImage" src= "${zoomAmount}" draggable="false">
-    <button id="upgradeThree" style="border: none; background: none; margin-left: 300px"><img id="saveButtonImage" src="${saveButton}" draggable="false"> </center>
+    <button id="upgradeTwo" style="border: none; background: none; margin-left: 100px"><img id="zoomAmountImage" src= "${zoomAmount}" draggable="false">
+    <button id="upgradeThree" style="border: none; background: none; margin-left: 100px"><img id="saveButtonImage" src="${saveButton}" draggable="false"> </center>
 
   <center> <img src="${costImg}" style="margin-left: 60px" draggable="false"> <img id="lwDigit0" src="${zeroImg}" alt=""> <img id="lwDigit1" src="${zeroImg}" alt=""> <img id="lwDigit2" src="${zeroImg}" style="margin-right: 100px" alt="">
-    <img src="${costImg}" style="margin-left: 350px;"> <img id="zaDigits0" src="${zeroImg}" alt=""> <img id="zaDigits1" src="${zeroImg}" alt=""> <img id="zaDigits2" src="${zeroImg}" alt="">
+    <img src="${costImg}" style="margin-left: 150px;"> <img id="zaDigits0" src="${zeroImg}" alt=""> <img id="zaDigits1" src="${zeroImg}" alt=""> <img id="zaDigits2" src="${zeroImg}" alt="">
       <img id="zaDigits3" src="${zeroImg}" style="margin-right: 75px" alt="">
-    <img src="${costImg}" style="margin-left: 350px;"> <img id="saveDigits0" src="${zeroImg}" alt=""> <img id="saveDigits1" src="${zeroImg}" alt=""> <img id="saveDigits2" src="${zeroImg}" alt=""> <img id="saveDigits3" src="${zeroImg}" alt="">
+    <img src="${costImg}" style="margin-left: 150px;"> <img id="saveDigits0" src="${zeroImg}" alt=""> <img id="saveDigits1" src="${zeroImg}" alt=""> <img id="saveDigits2" src="${zeroImg}" alt=""> <img id="saveDigits3" src="${zeroImg}" alt="">
       <img id="saveDigits4" src="${zeroImg}" alt=""> </center>
 
   <center> <img src="${rateImg}" draggable="false"> <img src="${zeroImg}"> <img src="${periodImg}"> <img src="${oneImg}">
-    <img src="${rateImg}" style="margin-left: 550px;"> <img src="${twoImg}">
-    <img src="${rateImg}" style="margin-left: 525px;"> <img src="${fiveImg}"> <img src="${zeroImg}"> </center>
+    <img src="${rateImg}" style="margin-left: 350px;"> <img src="${twoImg}">
+    <img src="${rateImg}" style="margin-left: 325px;"> <img src="${fiveImg}"> <img src="${zeroImg}"> </center>
 `;
 
 function update(deltaTime: number) {
