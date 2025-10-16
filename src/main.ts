@@ -46,6 +46,7 @@ const digitImages = [
 let counter: number = 0;
 let counterGrowSpeed: number = 0;
 
+/*
 let upgradeOneCost: number = 10;
 let upgradeTwoCost: number = 100;
 let upgradeThreeCost: number = 1000;
@@ -53,6 +54,7 @@ let upgradeThreeCost: number = 1000;
 let upgradeOneLocked: boolean = false;
 let upgradeTwoLocked: boolean = false;
 let upgradeThreeLocked: boolean = false;
+*/
 
 document.body.innerHTML = `
   <center><img src=${titleImg} style="margin-bottom: 20px" draggable="false"></center>
@@ -86,7 +88,7 @@ function update(deltaTime: number) {
   incrementTotal(deltaTime * counterGrowSpeed);
   setDigits(deltaTime);
   shakeFrame(deltaTime);
-  setButtons();
+  setButtonStatus();
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -152,69 +154,6 @@ const progressDigitElements = [
 ];
 //#endregion
 
-//#region line weight digits
-const lwDigit0: HTMLImageElement = document.getElementById(
-  "lwDigit0",
-) as HTMLImageElement;
-const lwDigit1: HTMLImageElement = document.getElementById(
-  "lwDigit1",
-) as HTMLImageElement;
-const lwDigit2: HTMLImageElement = document.getElementById(
-  "lwDigit2",
-) as HTMLImageElement;
-const lwDigitElements = [
-  lwDigit0,
-  lwDigit1,
-  lwDigit2,
-];
-//#endregion
-
-//#region zoom amount digits
-const zaDigits0: HTMLImageElement = document.getElementById(
-  "zaDigits0",
-) as HTMLImageElement;
-const zaDigits1: HTMLImageElement = document.getElementById(
-  "zaDigits1",
-) as HTMLImageElement;
-const zaDigits2: HTMLImageElement = document.getElementById(
-  "zaDigits2",
-) as HTMLImageElement;
-const zaDigits3: HTMLImageElement = document.getElementById(
-  "zaDigits3",
-) as HTMLImageElement;
-const zaDigitsElements = [
-  zaDigits0,
-  zaDigits1,
-  zaDigits2,
-  zaDigits3,
-];
-//#endregion
-
-//#region save digits
-const saveDigits0: HTMLImageElement = document.getElementById(
-  "saveDigits0",
-) as HTMLImageElement;
-const saveDigits1: HTMLImageElement = document.getElementById(
-  "saveDigits1",
-) as HTMLImageElement;
-const saveDigits2: HTMLImageElement = document.getElementById(
-  "saveDigits2",
-) as HTMLImageElement;
-const saveDigits3: HTMLImageElement = document.getElementById(
-  "saveDigits3",
-) as HTMLImageElement;
-const saveDigits4: HTMLImageElement = document.getElementById(
-  "saveDigits3",
-) as HTMLImageElement;
-const saveDigitsElements = [
-  saveDigits0,
-  saveDigits1,
-  saveDigits2,
-  saveDigits3,
-  saveDigits4,
-];
-//#endregion
-
 //#region rate
 const rateDigit0: HTMLImageElement = document.getElementById(
   "rateDigit0",
@@ -238,6 +177,75 @@ const rateElements = [
   rateDigit3,
   rateDigit4,
 ];
+//#endregion
+
+//#region line weight digits
+const lwDigit0: HTMLImageElement = document.getElementById(
+  "lwDigit0",
+) as HTMLImageElement;
+const lwDigit1: HTMLImageElement = document.getElementById(
+  "lwDigit1",
+) as HTMLImageElement;
+const lwDigit2: HTMLImageElement = document.getElementById(
+  "lwDigit2",
+) as HTMLImageElement;
+/*
+const lwDigitElements = [
+  lwDigit0,
+  lwDigit1,
+  lwDigit2,
+];
+*/
+//#endregion
+
+//#region zoom amount digits
+const zaDigits0: HTMLImageElement = document.getElementById(
+  "zaDigits0",
+) as HTMLImageElement;
+const zaDigits1: HTMLImageElement = document.getElementById(
+  "zaDigits1",
+) as HTMLImageElement;
+const zaDigits2: HTMLImageElement = document.getElementById(
+  "zaDigits2",
+) as HTMLImageElement;
+const zaDigits3: HTMLImageElement = document.getElementById(
+  "zaDigits3",
+) as HTMLImageElement;
+/*
+const zaDigitsElements = [
+  zaDigits0,
+  zaDigits1,
+  zaDigits2,
+  zaDigits3,
+];
+*/
+//#endregion
+
+//#region save digits
+const saveDigits0: HTMLImageElement = document.getElementById(
+  "saveDigits0",
+) as HTMLImageElement;
+const saveDigits1: HTMLImageElement = document.getElementById(
+  "saveDigits1",
+) as HTMLImageElement;
+const saveDigits2: HTMLImageElement = document.getElementById(
+  "saveDigits2",
+) as HTMLImageElement;
+const saveDigits3: HTMLImageElement = document.getElementById(
+  "saveDigits3",
+) as HTMLImageElement;
+const saveDigits4: HTMLImageElement = document.getElementById(
+  "saveDigits3",
+) as HTMLImageElement;
+/*
+const saveDigitsElements = [
+  saveDigits0,
+  saveDigits1,
+  saveDigits2,
+  saveDigits3,
+  saveDigits4,
+];
+*/
 //#endregion
 
 //#endregion
@@ -277,10 +285,6 @@ function purchaseUpgrade(cost: number, rate: number) {
 
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
-
-  upgradeOne.disabled = counter < upgradeOneCost;
-  upgradeTwo.disabled = counter < upgradeTwoCost;
-  upgradeThree.disabled = counter < upgradeThreeCost;
 }
 
 //#endregion
@@ -308,6 +312,7 @@ function setDigits(deltaTime: number) {
     setProgressDigits();
     setRateDigits();
   }
+  setUpgradeDigits();
 }
 
 function setProgressDigits() {
@@ -343,7 +348,7 @@ function setDigitOfCollapsingElement(digit: number, element: HTMLImageElement) {
 }
 
 //#endregion
-
+/*
 function setLineWeightDigits() {
   let upgradeDigits = Math.floor(upgradeOneCost);
 
@@ -371,6 +376,7 @@ function setSaveDigits() {
   }
 }
 
+
 function setWeightOfStaticElement(digit: number, element: HTMLImageElement) {
   element.src = `${digitImages[Math.floor(digit)]}`;
 }
@@ -379,12 +385,109 @@ setLineWeightDigits();
 setZoomAmountDigits();
 setSaveDigits();
 
+*/
+
+function setUpgradeDigits() {
+  for (const upgrade of upgrades) {
+    let upgradeDigits = Math.floor(upgrade.cost);
+
+    for (let i: number = upgrade.digits.length; i--;) {
+      const digit = Math.floor(upgradeDigits % 10);
+      const digitImage: string = `${digitImages[digit]}`;
+      upgrade.digits[i].setAttribute("src", digitImage);
+
+      upgradeDigits /= 10;
+    }
+  }
+}
+
 //#endregion
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 //#region UPGRADES
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+const costIncreasePerPurchase: number = 1.08;
+
+interface Upgrade {
+  button: HTMLButtonElement;
+  image: HTMLElement;
+
+  cost: number;
+  rate: number;
+
+  locked: boolean;
+
+  defaultSprite: string;
+  hoveredSprite: string;
+  lockedSprite: string;
+
+  digits: HTMLImageElement[];
+}
+
+const upgrades: Upgrade[] = [
+  {
+    button: upgradeOne,
+    image: lineWeightElement,
+    cost: 10,
+    rate: 0.1,
+    locked: false,
+    defaultSprite: `${lineWeight}`,
+    hoveredSprite: `${lineWeightHovered}`,
+    lockedSprite: `${lineWeightLocked}`,
+    digits: [lwDigit0, lwDigit1, lwDigit2],
+  },
+  {
+    button: upgradeTwo,
+    image: zoomAmountElement,
+    cost: 100,
+    rate: 2,
+    locked: false,
+    defaultSprite: `${zoomAmount}`,
+    hoveredSprite: `${zoomAmountHovered}`,
+    lockedSprite: `${zoomAmountLocked}`,
+    digits: [zaDigits0, zaDigits1, zaDigits2, zaDigits3],
+  },
+  {
+    button: upgradeThree,
+    image: saveButtonElement,
+    cost: 1000,
+    rate: 50,
+    locked: false,
+    defaultSprite: `${saveButton}`,
+    hoveredSprite: `${saveButtonHovered}`,
+    lockedSprite: `${saveButtonLocked}`,
+    digits: [saveDigits0, saveDigits1, saveDigits2, saveDigits3, saveDigits4],
+  },
+];
+
+initializeUpgrades();
+function initializeUpgrades() {
+  for (const upgrade of upgrades) {
+    upgrade.button.addEventListener("click", () => {
+      purchaseUpgrade(upgrade.cost, upgrade.rate);
+      upgrade.cost *= costIncreasePerPurchase;
+    });
+  }
+  setButtonStatus();
+  enableButtonHover();
+}
+
+function setButtonStatus() {
+  for (const upgrade of upgrades) {
+    if (upgrade.locked && counter >= upgrade.cost) {
+      upgrade.locked = false;
+      upgrade.image.setAttribute("src", upgrade.defaultSprite);
+      upgrade.button.disabled = false;
+    } else if (!upgrade.locked && counter < upgrade.cost) {
+      upgrade.locked = true;
+      upgrade.image.setAttribute("src", upgrade.lockedSprite);
+      upgrade.button.disabled = true;
+    }
+  }
+}
+
+/*
 upgradeOne.addEventListener("click", () => {
   purchaseUpgrade(upgradeOneCost, 0.1);
   upgradeOneCost *= 1.1;
@@ -402,6 +505,7 @@ upgradeThree.addEventListener("click", () => {
   upgradeThreeCost *= 1.1;
   setSaveDigits();
 });
+
 
 function setButtons() {
   if (upgradeOneLocked && counter >= upgradeOneCost) {
@@ -428,6 +532,8 @@ function setButtons() {
     saveButtonElement.setAttribute("src", `${saveButtonLocked}`);
   }
 }
+
+*/
 
 //#endregion
 
@@ -484,6 +590,8 @@ boxImage.addEventListener("mouseleave", () => {
   boxImage.setAttribute("src", `${boxUndamaged}`);
 });
 
+/*
+
 // line weight button
 lineWeightElement.addEventListener("mouseenter", () => {
   if (!upgradeOneLocked) {
@@ -515,5 +623,21 @@ saveButtonElement.addEventListener("mouseleave", () => {
     saveButtonElement.setAttribute("src", `${saveButton}`);
   }
 });
+*/
 
+function enableButtonHover() {
+  for (const upgrade of upgrades) {
+    upgrade.button.addEventListener("mouseenter", () => {
+      if (!upgrade.locked) {
+        upgrade.image.setAttribute("src", upgrade.hoveredSprite);
+      }
+    });
+
+    upgrade.button.addEventListener("mouseleave", () => {
+      if (!upgrade.locked) {
+        upgrade.image.setAttribute("src", upgrade.defaultSprite);
+      }
+    });
+  }
+}
 //#endregion
