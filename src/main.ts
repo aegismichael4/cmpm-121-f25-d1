@@ -1,5 +1,9 @@
 import "./style.css";
 
+import boxDamagedOneHover from "./assets/boxes/box-damaged-one-hover.png";
+import boxDamagedOne from "./assets/boxes/box-damaged-one.png";
+import boxDamagedTwoHover from "./assets/boxes/box-damaged-two-hover.png";
+import boxDamagedTwo from "./assets/boxes/box-damaged-two.png";
 import boxUndamagedHover from "./assets/boxes/box-undamaged-hover.png";
 import boxUndamaged from "./assets/boxes/box-undamaged.png";
 
@@ -45,6 +49,7 @@ const digitImages = [
 
 let counter: number = 0;
 let counterGrowSpeed: number = 0;
+let clickPower: number = 1;
 
 document.body.innerHTML = `
   <center><img src=${titleImg} style="margin-bottom: 20px" draggable="false"></center>
@@ -57,7 +62,7 @@ document.body.innerHTML = `
   <center> <img src="${rateImg}"> &nbsp; <img id="rateDigit0" src="${zeroImg}" alt=""> <img id="rateDigit1" src="${zeroImg}" alt="">
     <img id="rateDigit2" src="${zeroImg}" alt=""> <img id="rateDigit3" src="${zeroImg}" alt=""> <img src="${periodImg}"> <img id="rateDigit4" src="${zeroImg}" alt=""> </center>
 
-  <center><button id="box"><img id="boxImage" src="${boxUndamaged}" draggable="false" style="margin-bottom: 20px; margin-top: 20px; margin-left: 20px; margin-right: 20px;"></button></center>
+  <center><button id="box" style="z-index: 5; border: none; background: none;"><img id="boxImage" src="${boxUndamaged}" draggable="false" style="margin-bottom: 20px; margin-top: 20px; margin-left: 20px; margin-right: 20px;"></button></center>
 
   <center> <button id="upgradeOne" style="border: none; background: none; margin-bottom: 8px"><img id="lineWeightImage" src="${lineWeight}" draggable="false"></button>
     <button id="upgradeTwo" style="border: none; background: none; margin-left: 100px"><img id="zoomAmountImage" src= "${zoomAmount}" draggable="false">
@@ -72,6 +77,8 @@ document.body.innerHTML = `
   <center> <img src="${rateImg}" draggable="false"> <img src="${zeroImg}"> <img src="${periodImg}"> <img src="${oneImg}">
     <img src="${rateImg}" style="margin-left: 350px;"> <img src="${twoImg}">
     <img src="${rateImg}" style="margin-left: 325px;"> <img src="${fiveImg}"> <img src="${zeroImg}"> </center>
+
+  <div id="clickEffectsContainer"> </div>
 `;
 
 function update(deltaTime: number) {
@@ -79,6 +86,7 @@ function update(deltaTime: number) {
   setDigits(deltaTime);
   shakeFrame(deltaTime);
   setButtonStatus();
+  updateBoxSprite();
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -87,10 +95,13 @@ function update(deltaTime: number) {
 
 // box button
 const boxElement = document.getElementById("box")!;
-boxElement.setAttribute("style", "border: none; background: none;");
 
 // box image
 const boxImage = document.getElementById("boxImage")!;
+
+let boxLevel: number = 0;
+let boxSprite: string = `${boxUndamaged}`;
+let boxHoverSprite: string = `${boxUndamagedHover}`;
 
 // upgrades
 const upgradeOne: HTMLButtonElement = document.getElementById(
@@ -212,6 +223,12 @@ const saveDigits3: HTMLImageElement = document.getElementById(
 const saveDigits4: HTMLImageElement = document.getElementById(
   "saveDigits3",
 ) as HTMLImageElement;
+
+// click effects
+const clickEffectsElement: HTMLElement = document.getElementById(
+  "clickEffectsContainer",
+) as HTMLElement;
+
 //#endregion
 
 //#endregion
@@ -240,8 +257,9 @@ requestAnimationFrame(gameLoop);
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
 boxElement.addEventListener("click", () => {
-  incrementTotal(1);
+  incrementTotal(clickPower);
   startShake();
+  spawnClickEffect();
 });
 
 function purchaseUpgrade(cost: number, rate: number) {
@@ -251,6 +269,20 @@ function purchaseUpgrade(cost: number, rate: number) {
 
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
+}
+
+function updateBoxSprite() {
+  if (boxLevel == 0 && counter >= 10) {
+    boxLevel++;
+    boxSprite = `${boxDamagedOne}`;
+    boxHoverSprite = `${boxDamagedOneHover}`;
+    boxImage.setAttribute("src", boxSprite);
+  } else if (boxLevel == 1 && counter >= 10_000) {
+    boxLevel++;
+    boxSprite = `${boxDamagedTwo}`;
+    boxHoverSprite = `${boxDamagedTwoHover}`;
+    boxImage.setAttribute("src", boxSprite);
+  }
 }
 
 //#endregion
@@ -499,12 +531,20 @@ function shakeFrame(deltaTime: number) {
 //#region HOVER
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+let hoverX: number;
+let hoverY: number;
+
 // box
 boxImage.addEventListener("mouseenter", () => {
-  boxImage.setAttribute("src", `${boxUndamagedHover}`);
+  boxImage.setAttribute("src", boxHoverSprite);
 });
 boxImage.addEventListener("mouseleave", () => {
-  boxImage.setAttribute("src", `${boxUndamaged}`);
+  boxImage.setAttribute("src", boxSprite);
+});
+
+boxImage.addEventListener("mousemove", (e) => {
+  hoverX = e.clientX;
+  hoverY = e.clientY;
 });
 
 function enableButtonHover() {
@@ -522,4 +562,92 @@ function enableButtonHover() {
     });
   }
 }
+//#endregion
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+//#region CLICK EFFECT
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+
+class ClickEffect {
+  parentElement: HTMLElement;
+  effectText: HTMLElement;
+
+  startTime: number = -1;
+  duration: number = 1.5;
+  currTime: number = 0;
+
+  basicStyle: string;
+
+  alpha: number = 1;
+  goalY: number;
+  startX: number;
+  startY: number;
+
+  constructor(
+    clickPower: number,
+    element: HTMLElement,
+    left: number,
+    top: number,
+  ) {
+    this.startY = top;
+    this.startX = left;
+    this.goalY = top - 80;
+
+    this.basicStyle =
+      "font-size: 25px; z-index: 6; position: absolute; left: " +
+      left +
+      "px; top: " + top + "px;";
+
+    this.parentElement = element;
+    this.effectText = document.createElement("div");
+    this.effectText.innerHTML = "+" + clickPower.toString();
+    this.effectText.setAttribute(
+      "style",
+      this.basicStyle,
+    );
+    this.effectText.setAttribute("onmousedown", "return false");
+    this.effectText.setAttribute("onselectstart", "return false");
+
+    this.parentElement.appendChild(this.effectText);
+
+    requestAnimationFrame(this.update);
+  }
+
+  update = (timestamp: number) => {
+    if (this.startTime == -1) this.startTime = timestamp;
+    const deltaTime = (timestamp - this.startTime) / 1000;
+
+    this.currTime += deltaTime;
+
+    if (this.currTime < this.duration) {
+      let t = this.currTime / this.duration;
+      this.alpha = this.lerp(1, 0, t);
+      let newY = this.lerp(this.startY, this.goalY, t);
+
+      this.basicStyle =
+        "font-size: 25px; z-index: 6; position: absolute; left: " +
+        this.startX +
+        "px; top: " + newY + "px;";
+
+      this.effectText.setAttribute(
+        "style",
+        this.basicStyle + `color: rgba(1,0,0,${this.alpha})`,
+      );
+
+      this.startTime = timestamp;
+      requestAnimationFrame(this.update);
+    } else {
+      this.parentElement.removeChild(this.effectText);
+    }
+  };
+
+  lerp(a: number, b: number, t: number) {
+    return a + t * (b - a);
+  }
+}
+
+function spawnClickEffect() {
+  new ClickEffect(clickPower, clickEffectsElement, hoverX - 15, hoverY - 30);
+}
+
 //#endregion
