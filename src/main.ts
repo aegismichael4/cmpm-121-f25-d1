@@ -46,16 +46,6 @@ const digitImages = [
 let counter: number = 0;
 let counterGrowSpeed: number = 0;
 
-/*
-let upgradeOneCost: number = 10;
-let upgradeTwoCost: number = 100;
-let upgradeThreeCost: number = 1000;
-
-let upgradeOneLocked: boolean = false;
-let upgradeTwoLocked: boolean = false;
-let upgradeThreeLocked: boolean = false;
-*/
-
 document.body.innerHTML = `
   <center><img src=${titleImg} style="margin-bottom: 20px" draggable="false"></center>
 
@@ -189,13 +179,6 @@ const lwDigit1: HTMLImageElement = document.getElementById(
 const lwDigit2: HTMLImageElement = document.getElementById(
   "lwDigit2",
 ) as HTMLImageElement;
-/*
-const lwDigitElements = [
-  lwDigit0,
-  lwDigit1,
-  lwDigit2,
-];
-*/
 //#endregion
 
 //#region zoom amount digits
@@ -211,14 +194,6 @@ const zaDigits2: HTMLImageElement = document.getElementById(
 const zaDigits3: HTMLImageElement = document.getElementById(
   "zaDigits3",
 ) as HTMLImageElement;
-/*
-const zaDigitsElements = [
-  zaDigits0,
-  zaDigits1,
-  zaDigits2,
-  zaDigits3,
-];
-*/
 //#endregion
 
 //#region save digits
@@ -237,15 +212,6 @@ const saveDigits3: HTMLImageElement = document.getElementById(
 const saveDigits4: HTMLImageElement = document.getElementById(
   "saveDigits3",
 ) as HTMLImageElement;
-/*
-const saveDigitsElements = [
-  saveDigits0,
-  saveDigits1,
-  saveDigits2,
-  saveDigits3,
-  saveDigits4,
-];
-*/
 //#endregion
 
 //#endregion
@@ -486,55 +452,6 @@ function setButtonStatus() {
     }
   }
 }
-
-/*
-upgradeOne.addEventListener("click", () => {
-  purchaseUpgrade(upgradeOneCost, 0.1);
-  upgradeOneCost *= 1.1;
-  setLineWeightDigits();
-});
-
-upgradeTwo.addEventListener("click", () => {
-  purchaseUpgrade(upgradeTwoCost, 2);
-  upgradeTwoCost *= 1.1;
-  setZoomAmountDigits();
-});
-
-upgradeThree.addEventListener("click", () => {
-  purchaseUpgrade(upgradeThreeCost, 50);
-  upgradeThreeCost *= 1.1;
-  setSaveDigits();
-});
-
-
-function setButtons() {
-  if (upgradeOneLocked && counter >= upgradeOneCost) {
-    upgradeOneLocked = false;
-    lineWeightElement.setAttribute("src", `${lineWeight}`);
-  } else if (!upgradeOneLocked && counter < upgradeOneCost) {
-    upgradeOneLocked = true;
-    lineWeightElement.setAttribute("src", `${lineWeightLocked}`);
-  }
-
-  if (upgradeTwoLocked && counter >= upgradeTwoCost) {
-    upgradeTwoLocked = false;
-    zoomAmountElement.setAttribute("src", `${zoomAmount}`);
-  } else if (!upgradeTwoLocked && counter < upgradeTwoCost) {
-    upgradeTwoLocked = true;
-    zoomAmountElement.setAttribute("src", `${zoomAmountLocked}`);
-  }
-
-  if (upgradeThreeLocked && counter >= upgradeThreeCost) {
-    upgradeThreeLocked = false;
-    saveButtonElement.setAttribute("src", `${saveButton}`);
-  } else if (!upgradeThreeLocked && counter < upgradeThreeCost) {
-    upgradeThreeLocked = true;
-    saveButtonElement.setAttribute("src", `${saveButtonLocked}`);
-  }
-}
-
-*/
-
 //#endregion
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -589,41 +506,6 @@ boxImage.addEventListener("mouseenter", () => {
 boxImage.addEventListener("mouseleave", () => {
   boxImage.setAttribute("src", `${boxUndamaged}`);
 });
-
-/*
-
-// line weight button
-lineWeightElement.addEventListener("mouseenter", () => {
-  if (!upgradeOneLocked) {
-    lineWeightElement.setAttribute("src", `${lineWeightHovered}`);
-  }
-});
-lineWeightElement.addEventListener("mouseleave", () => {
-  if (!upgradeOneLocked) lineWeightElement.setAttribute("src", `${lineWeight}`);
-});
-
-// zoom amount
-zoomAmountElement.addEventListener("mouseenter", () => {
-  if (!upgradeTwoLocked) {
-    zoomAmountElement.setAttribute("src", `${zoomAmountHovered}`);
-  }
-});
-zoomAmountElement.addEventListener("mouseleave", () => {
-  if (!upgradeTwoLocked) zoomAmountElement.setAttribute("src", `${zoomAmount}`);
-});
-
-// save button
-saveButtonElement.addEventListener("mouseenter", () => {
-  if (!upgradeThreeLocked) {
-    saveButtonElement.setAttribute("src", `${saveButtonHovered}`);
-  }
-});
-saveButtonElement.addEventListener("mouseleave", () => {
-  if (!upgradeThreeLocked) {
-    saveButtonElement.setAttribute("src", `${saveButton}`);
-  }
-});
-*/
 
 function enableButtonHover() {
   for (const upgrade of upgrades) {
