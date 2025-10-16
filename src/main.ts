@@ -262,11 +262,6 @@ boxElement.addEventListener("click", () => {
   spawnClickEffect();
 });
 
-function purchaseUpgrade(cost: number, rate: number) {
-  counterGrowSpeed += rate;
-  counter -= cost;
-}
-
 function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
 }
@@ -484,6 +479,12 @@ function setButtonStatus() {
     }
   }
 }
+
+function purchaseUpgrade(cost: number, rate: number) {
+  counterGrowSpeed += rate;
+  counter -= cost;
+  clickPower = 1 + counterGrowSpeed * 0.05;
+}
 //#endregion
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -600,7 +601,7 @@ class ClickEffect {
 
     this.parentElement = element;
     this.effectText = document.createElement("div");
-    this.effectText.innerHTML = "+" + clickPower.toString();
+    this.effectText.innerHTML = "+" + clickPower.toFixed(1);
     this.effectText.setAttribute(
       "style",
       this.basicStyle,
@@ -620,9 +621,9 @@ class ClickEffect {
     this.currTime += deltaTime;
 
     if (this.currTime < this.duration) {
-      let t = this.currTime / this.duration;
+      const t = this.currTime / this.duration;
       this.alpha = this.lerp(1, 0, t);
-      let newY = this.lerp(this.startY, this.goalY, t);
+      const newY = this.lerp(this.startY, this.goalY, t);
 
       this.basicStyle =
         "font-size: 25px; z-index: 6; position: absolute; left: " +
