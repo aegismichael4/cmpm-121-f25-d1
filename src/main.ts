@@ -1,5 +1,10 @@
 import "./style.css";
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+// SPRITES
+// ------------------------------------------------------------------------------------------------------------------------------------------------
+
+// box sprites
 import boxDamagedOneHover from "./assets/boxes/box-damaged-one-hover.png";
 import boxDamagedOne from "./assets/boxes/box-damaged-one.png";
 import boxDamagedTwoHover from "./assets/boxes/box-damaged-two-hover.png";
@@ -7,11 +12,13 @@ import boxDamagedTwo from "./assets/boxes/box-damaged-two.png";
 import boxUndamagedHover from "./assets/boxes/box-undamaged-hover.png";
 import boxUndamaged from "./assets/boxes/box-undamaged.png";
 
+// UI sprites
 import costImg from "./assets/cost.png";
 import titleImg from "./assets/ms-paint-clicker.png";
 import progressImg from "./assets/progress.png";
 import rateImg from "./assets/rate.png";
 
+// button sprites
 import lineWeightHovered from "./assets/buttons/line-weight-button-hover.png";
 import lineWeightLocked from "./assets/buttons/line-weight-button-locked.png";
 import lineWeight from "./assets/buttons/line-weight-button.png";
@@ -22,6 +29,7 @@ import zoomAmountHovered from "./assets/buttons/zoom-amount-button-hover.png";
 import zoomAmountLocked from "./assets/buttons/zoom-amount-button-locked.png";
 import zoomAmount from "./assets/buttons/zoom-amount-button.png";
 
+// custom digit sprites
 import zeroImg from "./assets/numbers/0.png";
 import oneImg from "./assets/numbers/1.png";
 import twoImg from "./assets/numbers/2.png";
@@ -46,10 +54,6 @@ const digitImages = [
   eightImg,
   nineImg,
 ];
-
-let counter: number = 0;
-let counterGrowSpeed: number = 0;
-let clickPower: number = 1;
 
 document.body.innerHTML = `
   <center><img src=${titleImg} style="margin-bottom: 20px" draggable="false"></center>
@@ -80,14 +84,6 @@ document.body.innerHTML = `
 
   <div id="clickEffectsContainer"> </div>
 `;
-
-function update(deltaTime: number) {
-  incrementTotal(deltaTime * counterGrowSpeed);
-  setDigits(deltaTime);
-  shakeFrame(deltaTime);
-  setButtonStatus();
-  updateBoxSprite();
-}
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 //#region HTML ELEMENTS
@@ -237,6 +233,7 @@ const clickEffectsElement: HTMLElement = document.getElementById(
 //#region GAME LOOP
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// this function calls itself every tick, and keeps track of how much time has passed
 let lastTime: number = -1;
 function gameLoop(timestamp: number) {
   if (lastTime == -1) lastTime = timestamp;
@@ -250,12 +247,28 @@ function gameLoop(timestamp: number) {
 }
 requestAnimationFrame(gameLoop);
 
+// called by the gameLoop function
+// i split it up to seperate out the looping logic from all of the things i actually want to do at every update for clarity
+// deltaTime is the time in seconds since the last update
+function update(deltaTime: number) {
+  incrementTotal(deltaTime * counterGrowSpeed);
+  setDigits(deltaTime);
+  shakeFrame(deltaTime);
+  setButtonStatus();
+  updateBoxSprite();
+}
+
 //#endregion
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 //#region COUNTER LOGIC
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+let counter: number = 0;
+let counterGrowSpeed: number = 0;
+let clickPower: number = 1;
+
+// the box itself is clickable
 boxElement.addEventListener("click", () => {
   incrementTotal(clickPower);
   startShake();
@@ -266,6 +279,7 @@ function incrementTotal(amountToAdd: number) {
   counter += amountToAdd;
 }
 
+// this allows the box to look more "ragged" the more times it's been clicked
 function updateBoxSprite() {
   if (boxLevel == 0 && counter >= 10) {
     boxLevel++;
@@ -296,8 +310,11 @@ const digitPowerLookup = [
 ];
 
 //#region progress/rate
-const digitUpdateTime: number = 0.04;
+
+const digitUpdateTime: number = 0.04; // this is how much time must pass before the digit will update again, to prevent eyestrain
 let timer: number = 0;
+
+// called from update
 function setDigits(deltaTime: number) {
   timer += deltaTime;
   if (timer > digitUpdateTime) {
@@ -305,7 +322,7 @@ function setDigits(deltaTime: number) {
     setProgressDigits();
     setRateDigits();
   }
-  setUpgradeDigits();
+  setUpgradeDigits(); // no need to wait at all to update these, as they only happen when clicked and won't cause eyestrain
 }
 
 function setProgressDigits() {
@@ -332,6 +349,8 @@ function setRateDigits() {
   }
 }
 
+// this function allows me to have numbers that only display the minimum amount of significant digits
+// as in, the number 465 doesn't display as 00000465
 function setDigitOfCollapsingElement(digit: number, element: HTMLImageElement) {
   if (digit >= 0) {
     element.src = `${digitImages[Math.floor(digit)]}`;
@@ -341,44 +360,6 @@ function setDigitOfCollapsingElement(digit: number, element: HTMLImageElement) {
 }
 
 //#endregion
-/*
-function setLineWeightDigits() {
-  let upgradeDigits = Math.floor(upgradeOneCost);
-
-  for (let i: number = 2; i >= 0; i--) {
-    setWeightOfStaticElement(upgradeDigits % 10, lwDigitElements[i]);
-    upgradeDigits /= 10;
-  }
-}
-
-function setZoomAmountDigits() {
-  let upgradeDigits = Math.floor(upgradeTwoCost);
-
-  for (let i: number = 3; i >= 0; i--) {
-    setWeightOfStaticElement(upgradeDigits % 10, zaDigitsElements[i]);
-    upgradeDigits /= 10;
-  }
-}
-
-function setSaveDigits() {
-  let upgradeDigits = Math.floor(upgradeThreeCost);
-
-  for (let i: number = 4; i >= 0; i--) {
-    setWeightOfStaticElement(upgradeDigits % 10, saveDigitsElements[i]);
-    upgradeDigits /= 10;
-  }
-}
-
-
-function setWeightOfStaticElement(digit: number, element: HTMLImageElement) {
-  element.src = `${digitImages[Math.floor(digit)]}`;
-}
-
-setLineWeightDigits();
-setZoomAmountDigits();
-setSaveDigits();
-
-*/
 
 function setUpgradeDigits() {
   for (const upgrade of upgrades) {
@@ -466,6 +447,8 @@ function initializeUpgrades() {
   enableButtonHover();
 }
 
+// this makes sure that they're only clickable if the counter exceeds their cost
+// and their sprite reflects that
 function setButtonStatus() {
   for (const upgrade of upgrades) {
     if (upgrade.locked && counter >= upgrade.cost) {
@@ -491,6 +474,9 @@ function purchaseUpgrade(cost: number, rate: number) {
 //#region SHAKE
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// this was a fun custom effect to implement
+// i took the same approach for this that i'd normally do with a basic camera shake
+
 const shakeDuration: number = 0.1;
 const shakeIntensity: number = 2;
 
@@ -499,6 +485,9 @@ function startShake() {
   shakeTimer = shakeDuration;
 }
 
+// shake timer is constantly counting downwards in seconds
+// whenever it's greater than 0, the box shakes
+// call startShake to set the box timer to the shakeDuration amount
 let resetFlag: boolean = true;
 function shakeFrame(deltaTime: number) {
   shakeTimer -= deltaTime;
@@ -508,7 +497,7 @@ function shakeFrame(deltaTime: number) {
     const horizontalShake = Math.random() * shakeIntensity * 2 - shakeIntensity; // -shakeintensity to shakeintensity
     const verticalShake = Math.random() * shakeIntensity * 2 - shakeIntensity;
 
-    boxImage.setAttribute(
+    boxImage.setAttribute( // shake effect achieved by moving it a random amount of pixels left/right and up/down every frame
       "style",
       `margin-bottom: ${20 + verticalShake}px; margin-top: ${
         20 - verticalShake
@@ -519,6 +508,7 @@ function shakeFrame(deltaTime: number) {
   } else if (resetFlag) {
     resetFlag = false;
 
+    // reset position the first time the counter runs out
     boxImage.setAttribute(
       "style",
       `margin-bottom: 20px; margin-top: 20px; margin-left: 20px; margin-right: 20px;`,
@@ -542,12 +532,12 @@ boxImage.addEventListener("mouseenter", () => {
 boxImage.addEventListener("mouseleave", () => {
   boxImage.setAttribute("src", boxSprite);
 });
-
 boxImage.addEventListener("mousemove", (e) => {
   hoverX = e.clientX;
   hoverY = e.clientY;
 });
 
+// buttons should only have an on-hover effect when they're not disabled
 function enableButtonHover() {
   for (const upgrade of upgrades) {
     upgrade.button.addEventListener("mouseenter", () => {
@@ -569,6 +559,10 @@ function enableButtonHover() {
 //#region CLICK EFFECT
 // ------------------------------------------------------------------------------------------------------------------------------------------------
 
+// this effect was (probably obviously) inspired by cookie clicker
+
+// i took a "particle" approach to the effect
+// each number that shows how much you're getting for each click is a ClickEffect instance, which has its own behavior
 class ClickEffect {
   parentElement: HTMLElement;
   effectText: HTMLElement;
@@ -614,13 +608,14 @@ class ClickEffect {
     requestAnimationFrame(this.update);
   }
 
+  // every tick, while it's not surpassed its expire time, update calls itself
   update = (timestamp: number) => {
     if (this.startTime == -1) this.startTime = timestamp;
     const deltaTime = (timestamp - this.startTime) / 1000;
 
     this.currTime += deltaTime;
 
-    if (this.currTime < this.duration) {
+    if (this.currTime < this.duration) { // not expired
       const t = this.currTime / this.duration;
       this.alpha = this.lerp(1, 0, t);
       const newY = this.lerp(this.startY, this.goalY, t);
@@ -637,16 +632,18 @@ class ClickEffect {
 
       this.startTime = timestamp;
       requestAnimationFrame(this.update);
-    } else {
-      this.parentElement.removeChild(this.effectText);
+    } else { // expired
+      this.parentElement.removeChild(this.effectText); // cut off all reference to the object so it can be auto deleted (i... hope so at least)
     }
   };
 
+  // idk why it's not included
   lerp(a: number, b: number, t: number) {
     return a + t * (b - a);
   }
 }
 
+// called whenever the box is clicked
 function spawnClickEffect() {
   new ClickEffect(clickPower, clickEffectsElement, hoverX - 15, hoverY - 30);
 }
